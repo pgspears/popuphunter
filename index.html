@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Adware Apocalypse '99</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* --- Global & Desktop Chaos (V16 Style) --- */
+    :root {
+      --integrity-color: #0f0;
+      --integrity-percent: 100%;
+    }
+    body { 
+      margin: 0; padding: 0;
+      background: #000; /* Black fallback for behind the canvas */
+      font-family: 'Comic Sans MS', cursive; 
+      overflow: hidden; 
+      transition: filter 0.5s, transform 0.5s;
+      cursor: default;
+    }
+    #background-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 1; /* Sit behind desktop but above body bg */
+    }
+    #desktop {
+      position: relative;
+      width: 100%; height: 100vh;
+      background-color: #008080; /* Classic Teal desktop color */
+      transition: background-color 1s, filter 1s;
+      z-index: 2;
+    }
+    /* Desktop Degradation Styles */
+    .desktop-degrade-1 { background-color: #3a8080 !important; filter: sepia(0.3); }
+    .desktop-degrade-2 { background-color: #806b00 !important; filter: saturate(2) contrast(1.5); animation: faintFlicker 0.5s infinite; }
+    .desktop-degrade-3 { background-color: #580000 !important; filter: invert(0.8) hue-rotate(180deg); animation: heavyFlicker 0.2s infinite; }
+    @keyframes faintFlicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.95; } }
+    @keyframes heavyFlicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+
+    .major-glitch { animation: screenGlitch 0.7s ease-in-out infinite; }
+    @keyframes screenGlitch{ 0%, 100% { transform: translate(0,0) skew(0); } 25% { transform: translate(15px,-10px) skew(-3deg); } 50% { transform: translate(-10px,15px) skew(5deg); } 75% { transform: translate(5px,5px) skew(2deg); } }
+    #explosion{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at center,rgba(255,255,255,0.95),rgba(255,60,0,0.9) 60%);pointer-events:none;z-index:3001;animation:explosionFlash 1s ease-out forwards;}
+    @keyframes explosionFlash{0%{opacity:0;}10%{opacity:1;}50%{opacity:0.9;}100%{opacity:0;}}
+    #jumpscare { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 8000; background-color: #00f; background-size: contain; background-repeat: no-repeat; background-position: center; }
+    
+    /* --- Startup & End Screens --- */
+    #startScreen { position:fixed;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:5000;text-align:center; background: #000; }
+    #start-controls { display: none; }
+    #startScreen h2 { font-size:3rem; margin-bottom:20px; text-shadow: 2px 2px #f00; color: #fff;}
+    .difficulty-btn{margin:10px;padding:15px 30px;font-size:1.5rem;background:#222;color:#0f0;border:3px solid #0f0;cursor:pointer;transition: all 0.2s; border-radius: 5px; }
+    .difficulty-btn:hover { background: #0f0; color: #000; box-shadow: 0 0 20px #0f0; }
+    .insane-btn { color: #f00; border-color: #f00; animation: pulseInsane 0.5s infinite alternate; }
+    @keyframes pulseInsane { from { box-shadow: 0 0 5px #f00; } to { box-shadow: 0 0 20px #f00; } }
+
+    /* --- Star Wars Intro --- */
+    #intro-container { position: absolute; width: 100%; height: 100%; top: 0; left: 0; background: #000; perspective: 800px; overflow: hidden; }
+    #intro-crawler { position: absolute; top: 100%; width: 80%; left: 10%; color: #ffc; font-size: 3vw; text-align: justify; animation: intro-animation 28s linear forwards; }
+    #intro-crawler h2 { text-align: center; font-size: 3vw; }
+    @keyframes intro-animation { from { top: 100%; transform: rotateX(15deg); } to { top: -150%; transform: rotateX(15deg); } }
+    #skip-intro-btn { position: fixed; bottom: 20px; right: 20px; z-index: 5001; background: #333; color: #fff; border: 2px solid #fff; padding: 10px 15px; cursor: pointer; }
+    
+    #bsod-screen { display: none; background: #0000AA; color: #FFF; font-family: 'Lucida Console', monospace; padding: 20px; flex-direction: column; align-items: center; justify-content: center; }
+    #bsod-screen h1 { font-size: 2.5rem; background: #c0c0c0; color: #0000AA; padding: 5px 20px; display: inline-block; }
+    #restartBtn { margin-top: 30px; }
+
+    /* --- Browser & Content (with improved toolbar colors) --- */
+    #browser{ position: absolute; width: 85vw; height: 80vh; top: 50%; left: 50%; transform: translate(-50%, -50%); border:8px inset #c0c0c0; box-shadow:5px 5px 20px rgba(0,0,0,0.5); background: #fff; display: flex; flex-direction: column; min-height: 400px; z-index: 50; }
+    #toolbars{display:flex;flex-direction:column;}
+    .toolbar{ display:flex; flex-wrap:wrap; align-items: center; background:#c0c0c0; border-top: 1px solid #fff; border-bottom: 1px solid #808080; padding: 2px; }
+    .toolbar-item { border: 2px outset #f0f0f0; background-color: #c0c0c0; color: #000; padding: 2px 5px; margin: 2px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+    .toolbar-item:active { border-style: inset; }
+    .toolbar-item img { height: 16px; width: 16px; margin-right: 4px; }
+    .toolbar-separator { width: 2px; height: 20px; background-color: #808080; border-right: 1px solid #fff; margin: 0 4px; }
+    #content{position:relative;flex-grow:1;overflow:auto;margin-top:10px;text-align:center;}
+    h1{text-align:center;font-size:2rem;background:linear-gradient(to right,#f00,#ff0,#0f0,#0ff,#00f,#f0f);-webkit-background-clip:text;color:transparent;animation:textGlitch .3s infinite alternate;}
+    @keyframes textGlitch{0%{text-shadow:2px 2px red;}100%{text-shadow:-2px -2px lime;}}
+    #marquee{margin:8px 0;font-size:16px;color:#900;background:#ffc;border:1px solid #900;}
+    .control-btn{display:inline-block;margin: 10px;padding:6px 12px;background:#000;color:#fff;border:1px solid #f0f;animation:pulse 1s infinite alternate;font-size:14px;cursor:pointer;}
+    #agreeBtn { background: #1a881a; color: white; border-color: #0f0; box-shadow: 0 0 15px #0f0; }
+    @keyframes pulse{from{transform:scale(1);}to{transform:scale(1.05);}}
+
+    /* --- Popups & Icons --- */
+    .popup-window{position:fixed;background:#f0f0f0;border:2px solid #000080;box-shadow:4px 4px 10px rgba(0,0,0,0.5);font-family:'Segoe UI',Tahoma,sans-serif;z-index:1500; border-radius: 5px; cursor: pointer; }
+    .popup-header{background:#000080;color:#fff;padding:4px 8px;font-size:14px;display:flex;justify-content:space-between;cursor:move;}
+    .popup-body{padding:8px;color:#000;font-size:14px;}
+    .close-btn{background:#c0c0c0;border:1px solid #000;padding:0 4px;font-weight:bold;cursor:pointer;}
+    .desktop-icon { position: fixed; z-index: 100; width: 80px; text-align: center; cursor: pointer; }
+    .desktop-icon img { width: 48px; height: 48px; }
+    .desktop-icon p { color: white; text-shadow: 1px 1px #000; font-size: 12px; margin: 0; }
+    
+    /* --- AI Assistant --- */
+    #flippy-assistant { display: none; position: fixed; bottom: 20px; right: 20px; z-index: 4000; animation: flippyEnter 0.5s forwards; }
+    @keyframes flippyEnter { from { transform: translateY(200%); } to { transform: translateY(0); } }
+    #flippy-bubble { background: #FFFFE1; border: 1px solid black; padding: 15px; border-radius: 10px; width: 220px; position: relative; margin-right: 60px; }
+    #flippy-bubble::after { content: ''; position: absolute; bottom: 10px; right: -10px; width: 0; height: 0; border-top: 10px solid transparent; border-bottom: 10px solid transparent; border-left: 10px solid #FFFFE1; }
+    #flippy-close { position: absolute; top: 5px; right: 5px; cursor: pointer; font-weight: bold; }
+    #flippy-img { position: absolute; bottom: 0; right: 0; width: 64px; animation: flippyBob 2s ease-in-out infinite; }
+    @keyframes flippyBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+    /* --- Scoreboard & UI --- */
+    #scoreboard{position:fixed;top:10px;right:10px;width:250px;background:rgba(0,0,0,0.9);color:#0f0;padding:15px;font-family:monospace;font-size:16px;border:3px solid #0f0;border-radius:10px;box-shadow:0 0 15px rgba(0,255,0,0.7);z-index:2001;}
+    #scoreboard p{margin:6px 0;}
+    #integrity-bar-container{width:100%;background:#400;border:1px solid #800;height:20px;margin-top:10px;}
+    #integrity-bar{width:var(--integrity-percent);height:100%;background:var(--integrity-color);transition:width 0.5s, background-color 0.5s;}
+    
+    /* --- Super-Weapons & Nuke Text --- */
+    #nuke-controls { position:fixed; bottom: 10px; left: 10px; z-index: 2002; display: none; flex-direction: column; gap: 5px; }
+    .nuke-btn { padding: 8px 15px; font-size: 14px; cursor: pointer; border: 3px solid #800; background: red; color: #fff; animation: pulseNuke 1s infinite alternate; position: relative; }
+    .nuke-btn:disabled { cursor: not-allowed; background: #555; color: #999; animation: none; }
+    .nuke-btn .cooldown-timer { font-weight: bold; margin-left: 8px; color: #ff0; }
+    #annihilateBtn { background: darkorange; color: #000; }
+    @keyframes pulseNuke{from{transform:scale(1);}to{transform:scale(1.1);}}
+    #nuke-text-overlay {
+        display: none;
+        position: fixed;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 3002;
+        font-size: 6rem;
+        font-weight: bold;
+        color: #fff;
+        text-align: center;
+        text-shadow: 0 0 10px #000, 0 0 20px #000, 5px 5px 5px #f00;
+        pointer-events: none;
+        animation: nukeTextAnim 2s ease-out forwards;
+    }
+    @keyframes nukeTextAnim {
+        0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+        10% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+        80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    /* --- Achievements --- */
+    .achievement-popup { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: linear-gradient(45deg, #ffd700, #ffec8b); color: #333; padding: 20px; border: 4px solid #fff; border-radius: 10px; z-index: 6000; box-shadow: 0 0 30px #ffd700; text-align: center; font-size: 1.5rem; animation: achievement-anim 4s ease-in-out forwards; }
+    .achievement-popup-title { font-weight: bold; display: block; font-size: 1.2rem; color: #a0522d; }
+    @keyframes achievement-anim { 0% { bottom: -100px; opacity: 0; } 15% { bottom: 20px; opacity: 1; } 85% { bottom: 20px; opacity: 1; } 100% { bottom: -100px; opacity: 0; } }
+
+  </style>
+</head>
+<body>
+  <canvas id="background-canvas"></canvas>
+  <div id="explosion"></div>
+  <div id="nuke-text-overlay"></div>
+  <div id="jumpscare"></div>
+  
+  <div id="startScreen">
+      <div id="intro-container">
+          <button id="skip-intro-btn">SKIP INTRO</button>
+          <div id="intro-crawler">
+              <h2>A long time ago in a browser far, far away....</h2>
+              <p>Episode IV: A NEW HELL</p>
+              <p>The year is 1995. It is a time of digital chaos. The Information Superhighway, once a beacon of hope, is now a treacherous road filled with rogue pop-ups and parasitic toolbars.</p>
+              <p>You, a lone user armed with only a 28.8k modem and a handful of megabytes of RAM, must navigate this perilous landscape.</p>
+              <p>Your mission: survive. Your system's integrity is failing. Prepare to enter... The ADWARE APOCALYPSE.</p>
+          </div>
+      </div>
+
+      <div id="start-controls">
+          <h2>Adware Apocalypse '99</h2>
+          <button class="difficulty-btn" onclick="startSim('easy')">Easy</button>
+          <button class="difficulty-btn" onclick="startSim('medium')">Medium</button>
+          <button class="difficulty-btn" onclick="startSim('hard')">Hard</button>
+          <button class="difficulty-btn insane-btn" onclick="startSim('insane')">INSANE</button>
+      </div>
+  </div>
+
+  <div id="bsod-screen">
+      <h1>A fatal exception 0E has occurred at 0028:C0011E36</h1>
+      <p>Your system is toast. Click anywhere to not restart.</p>
+      <div id="final-score"></div>
+      <p id="final-insult" style="margin-top: 20px; font-style: italic;"></p>
+      <button id="restartBtn" class="difficulty-btn" onclick="restartGame()">I'm Not Done Suffering!</button>
+  </div>
+
+  <div id="desktop">
+    <div id="browser">
+      <div id="toolbars"></div>
+      <div id="content">
+        <h1>Systemic Corruption</h1>
+        <marquee id="marquee" scrollamount="12">🚨 SELECT DIFFICULTY TO BEGIN 🚨</marquee>
+        <button class="control-btn" onclick="toggleFlip()">🔄 FLIP</button>
+        <button id="agreeBtn" class="control-btn" onclick="agreeToTerms()">I Agree To All Terms & Conditions</button>
+      </div>
+      <footer>© 2026 UX Hell – All Rights Reserved To Ruin Your Day</footer>
+    </div>
+  </div>
+
+  <div id="flippy-assistant">
+    <div id="flippy-bubble">
+      <span id="flippy-close" onclick="dismissFlippy()">X</span>
+      <p id="flippy-text">It looks like you're trying to use a computer. Would you like help?</p>
+    </div>
+    <img id="flippy-img" src="https://i.imgur.com/JANcgY1.png" alt="Flippy Assistant">
+  </div>
+
+  <div id="nuke-controls">
+      <button id="nukePopupsBtn" class="nuke-btn" onclick="useNukePopups()">💣 Nuke Popups <span class="cooldown-timer"></span></button>
+      <button id="nukeToolbarsBtn" class="nuke-btn" onclick="useNukeToolbars()">💥 Nuke Toolbars <span class="cooldown-timer"></span></button>
+      <button id="annihilateBtn" class="nuke-btn" onclick="useAnnihilate()">☢️ ANNIHILATE! <span class="cooldown-timer"></span></button>
+  </div>
+
+  <div id="scoreboard">
+    <p>Time: <span id="timer">0</span>s</p>
+    <p>Integrity:</p>
+    <div id="integrity-bar-container"><div id="integrity-bar"></div></div>
+    <div id="system-stats">
+        <p>CPU: <span id="cpu-usage">0</span>%</p>
+        <p>RAM: <span id="ram-usage">0</span>MB</p>
+    </div>
+    <p>Pop-ups Closed: <span id="pop-closed-count">0</span></p>
+    <p>Toolbars Cleared: <span id="tb-cleared-count">0</span></p>
+    <p>Annihilations: <span id="nuke-count">0</span></p>
+    <p>Icons Clicked: <span id="icon-clicks">0</span></p>
+  </div>
+
+  <script>
+    // --- GLOBAL STATE & CONFIG ---
+    const simState = { running: false, difficulty: 'medium', startTime: null, intervals: [], integrity: 100, resources: { cpu: 0, ram: 128 }, cooldowns: { nuke: 0 }, counts: { popups: 0, toolbars: 0, icons: 0, closedPopups: 0, clearedToolbars: 0, nukesUsed: 0, iconsClicked: 0 }, elements: { popups: [], toolbars: [], icons: [] }, achievements: { survive60: false, close25: false, useNuke: false, clickIcon: false, clickBaby: false, agree: false } };
+    const difficultySettings = { easy:   { tb: 4000, pu: 3500, icon: 10000, integrityDrain: 0.1 }, medium: { tb: 2500, pu: 2000, icon: 7000,  integrityDrain: 0.2 }, hard:   { tb: 1500, pu: 1200, icon: 5000,  integrityDrain: 0.4 }, insane: { tb: 800, pu: 700, icon: 3000, integrityDrain: 0.7 }};
+    const cooldownSettings = { easy: 20, medium: 15, hard: 12, insane: 10 };
+    const DOM = { body: document.body, scoreboard: document.getElementById('scoreboard'), startScreen: document.getElementById('startScreen'), browser: document.getElementById('browser'), toolbars: document.getElementById('toolbars'), nukeText: document.getElementById('nuke-text-overlay'), nukeControls: document.getElementById('nuke-controls'), flippy: document.getElementById('flippy-assistant'), bsod: document.getElementById('bsod-screen'), desktop: document.getElementById('desktop'), bgCanvas: document.getElementById('background-canvas'), bgCtx: null, nukeBtns: document.querySelectorAll('.nuke-btn'), jumpscare: document.getElementById('jumpscare'), marquee: document.getElementById('marquee'), introContainer: document.getElementById('intro-container'), introCrawler: document.getElementById('intro-crawler'), startControls: document.getElementById('start-controls'), skipIntroBtn: document.getElementById('skip-intro-btn') };
+
+    // --- LORE & MEME DATA ---
+    const toolbarData = { labels: ['Free iPad!', 'MySpace', 'Bonzi Buddy', 'Ask Jeeves', 'WinZip Trial', 'Weatherbug', 'RealPlayer', 'Clean PC!', 'DOWNLOAD', 'More RAM', 'Hamster Dance', '1,000,000th Visitor!'], icons: [ 'https://i.imgur.com/vHqXN2p.png', 'https://i.imgur.com/5u2yXvA.png', 'https://i.imgur.com/kS9bW7O.png', 'https://i.imgur.com/gA3gY4j.png', 'https://i.imgur.com/M6x5g02.png', 'https://i.imgur.com/OqT9M77.png', 'https://i.imgur.com/JANcgY1.png' ], fonts: ['Arial', 'Times New Roman', 'Courier New', 'Impact'] };
+    const popupNukeQuotes = ["Popups WASTED!", "I must break you!", "Hasta la vista, popups!"];
+    const toolbarNukeQuotes = ["Toolbars TERMINATED!", "You're fired!", "Get to the choppa!"];
+    const annihilateNukeQuotes = ["ANNIHILATION!", "It's game over, man!", "M-M-M-MONSTER KILL!"];
+    const nukeSpeechQuotes = ["Say hello to my little friend!", "I'll be back.", "Come with me if you want to live.", "Yippee-ki-yay...", "I have come here to chew bubblegum and kick ass... and I'm all out of bubblegum."];
+    const finalInsults = ["A Winner is You!", "Task failed successfully.", "I've seen more stable Jenga towers.", "Congratulations! You broke it.", "Game Over, Man. Game Over!"];
+    const popupMsgs = ['All your base are belong to us.', 'The cake is a lie.', 'Do a barrel roll!', 'Your PC is running slow! Download more RAM?', 'It\'s a secret to everybody.', 'LEEROY JENKINS!', 'Confirm your SSN to win a free cruise!'];
+    const flippyTips = ["It looks like you're trying to lose. I can help!", "Have you tried Alt+F4 for a performance boost?", "This is fine.", "Are these popups annoying? I can help you get more!"];
+
+    // --- BACKGROUND ANIMATION --- (Unchanged)
+    let worm, mouseParticles = [];
+    function setupBackgroundAnims() { DOM.bgCtx = DOM.bgCanvas.getContext('2d'); DOM.bgCanvas.width = window.innerWidth; DOM.bgCanvas.height = window.innerHeight; worm = { x: rnd(100, DOM.bgCanvas.width - 100), y: rnd(100, DOM.bgCanvas.height - 100), length: 50, segments: [], speed: 2, angle: Math.random() * Math.PI * 2, color: 'lime' }; document.addEventListener('mousemove', e => { if (!simState.running) return; mouseParticles.push({ x: e.clientX, y: e.clientY, life: 25, size: rnd(2,6), color: `rgb(${rnd(200,255)}, 0, ${rnd(100,255)})` }); }); }
+    function drawBackgroundAnims() { DOM.bgCtx.fillStyle = 'rgba(0, 0, 0, 0.05)'; DOM.bgCtx.fillRect(0, 0, DOM.bgCanvas.width, DOM.bgCanvas.height); worm.angle += (Math.random() - 0.5) * 0.5; worm.x += Math.cos(worm.angle) * worm.speed; worm.y += Math.sin(worm.angle) * worm.speed; if (worm.x < 0 || worm.x > DOM.bgCanvas.width || worm.y < 0 || worm.y > DOM.bgCanvas.height) { worm.angle += Math.PI; } worm.segments.push({x: worm.x, y: worm.y}); if(worm.segments.length > worm.length) worm.segments.shift(); DOM.bgCtx.fillStyle = worm.color; worm.segments.forEach(seg => DOM.bgCtx.fillRect(seg.x, seg.y, 3, 3)); mouseParticles.forEach((p, i) => { p.life--; if (p.life <= 0) { mouseParticles.splice(i, 1); } else { DOM.bgCtx.fillStyle = p.color; DOM.bgCtx.globalAlpha = p.life / 25; DOM.bgCtx.fillRect(p.x + rnd(-8,8), p.y + rnd(-8,8), p.size, p.size); DOM.bgCtx.globalAlpha = 1.0; } }); }
+
+    // --- AUDIO ENGINE ---
+    let audioCtx, masterGain, ambientSource;
+    function initAudio() { if (audioCtx) return; audioCtx = new (window.AudioContext || window.webkitAudioContext)(); masterGain = audioCtx.createGain(); masterGain.gain.value = 0.6; masterGain.connect(audioCtx.destination); playAmbientSound(); }
+    function playSound(type, options = {}) { if (!audioCtx) initAudio(); const now = audioCtx.currentTime; switch(type) { case 'beep': { const { freq = 440, dur = 0.1, vol = 0.5 } = options; const osc = audioCtx.createOscillator(); osc.type = 'square'; osc.frequency.setValueAtTime(freq, now); const g = audioCtx.createGain(); g.gain.setValueAtTime(vol, now); g.gain.exponentialRampToValueAtTime(0.001, now + dur); osc.connect(g); g.connect(masterGain); osc.start(now); osc.stop(now + dur); break; } case 'nuke_explosion': { const dur = 1.5; const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * dur, audioCtx.sampleRate); const data = buf.getChannelData(0); for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 4); const noise = audioCtx.createBufferSource(); noise.buffer = buf; const osc = audioCtx.createOscillator(); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(440, now); osc.frequency.exponentialRampToValueAtTime(50, now + 1); const filter = audioCtx.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.setValueAtTime(1200, now); filter.frequency.linearRampToValueAtTime(100, now + dur * 0.7); noise.connect(filter); osc.connect(filter); filter.connect(masterGain); noise.start(now); osc.start(now); noise.stop(now+dur); osc.stop(now+dur); break; } case 'error': { const osc = audioCtx.createOscillator(); osc.type = 'sine'; osc.frequency.setValueAtTime(987.77, now); const g = audioCtx.createGain(); g.gain.setValueAtTime(0.3, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.2); osc.connect(g); g.connect(masterGain); osc.start(now); osc.stop(now + 0.2); break; } case 'achievement': { const osc1 = audioCtx.createOscillator(); osc1.type = "sine"; osc1.frequency.setValueAtTime(523.25, now); osc1.start(now); osc1.stop(now + 0.1); osc1.connect(masterGain); const osc2 = audioCtx.createOscillator(); osc2.type = "sine"; osc2.frequency.setValueAtTime(659.25, now + 0.1); osc2.start(now + 0.1); osc2.stop(now + 0.2); osc2.connect(masterGain); const osc3 = audioCtx.createOscillator(); osc3.type = "sine"; osc3.frequency.setValueAtTime(783.99, now + 0.2); osc3.start(now + 0.2); osc3.stop(now + 0.4); osc3.connect(masterGain); break;} case 'jumpscare': { const osc = audioCtx.createOscillator(); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(120, now); osc.frequency.exponentialRampToValueAtTime(80, now + 0.3); const g = audioCtx.createGain(); g.gain.setValueAtTime(0.8, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.3); osc.connect(g); g.connect(masterGain); osc.start(now); osc.stop(now + 0.3); break; } case 'close_popup': { const osc = audioCtx.createOscillator(); const g = audioCtx.createGain(); osc.type = 'square'; g.gain.setValueAtTime(0.3, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.15); osc.frequency.setValueAtTime(1200, now); osc.frequency.exponentialRampToValueAtTime(300, now + 0.1); osc.connect(g); g.connect(masterGain); osc.start(now); osc.stop(now + 0.15); break; } } }
+    function playAmbientSound() { const buf = audioCtx.createBuffer(2, audioCtx.sampleRate * 3, audioCtx.sampleRate); for (let channel = 0; channel < 2; channel++) { const data = buf.getChannelData(channel); for (let i = 0; i < data.length; i++) data[i] = Math.random() * 0.01 - 0.005; } ambientSource = audioCtx.createBufferSource(); ambientSource.buffer = buf; ambientSource.loop = true; const gain = audioCtx.createGain(); gain.gain.value = 0.1; ambientSource.connect(gain); gain.connect(masterGain); ambientSource.start(); }
+    function updateAmbientSound() { if (!ambientSource) return; const intensity = Math.min(1, simState.resources.cpu / 100); masterGain.gain.value = 0.3 + intensity * 0.7; }
+    function speak(text, options = {}) { if ('speechSynthesis' in window) { const { pitch = 1.5, rate = 1.2 } = options; const utterance = new SpeechSynthesisUtterance(text); utterance.pitch = pitch; utterance.rate = rate; window.speechSynthesis.speak(utterance); } }
+    function playRandomSystemSound() { if (!simState.running) return; const r = Math.random(); if (r < 0.6) { playSound('error'); } else { speak("You have mail", { pitch: 1.8, rate: 1.5 }); } }
+
+    // --- SIMULATION LIFECYCLE ---
+    function startSim(diff) { simState.running = true; simState.difficulty = diff; simState.startTime = Date.now(); DOM.startScreen.style.display = 'none'; DOM.nukeControls.style.display = 'flex'; DOM.marquee.textContent = `SYSTEM CORRUPTION IN PROGRESS... | DIFFICULTY: ${diff.toUpperCase()}`; setupBackgroundAnims(); initAudio(); const s = difficultySettings[diff]; simState.intervals.push(setInterval(gameLoop, 50)); simState.intervals.push(setInterval(addToolbar, s.tb)); simState.intervals.push(setInterval(spawnPopup, s.pu)); simState.intervals.push(setInterval(spawnDesktopIcon, s.icon)); simState.intervals.push(setInterval(showFlippy, 25000)); simState.intervals.push(setInterval(playRandomSystemSound, 15000)); }
+    function gameLoop() { if (!simState.running) return; updateTimer(); updateResources(); updateIntegrity(); drawBackgroundAnims(); updateUI(); checkAchievements(); checkEndCondition(); if (Math.random() < 0.0005) triggerBlueLobster(); }
+    function stopSim() { simState.running = false; simState.intervals.forEach(clearInterval); if (ambientSource) ambientSource.stop(); DOM.body.className = ''; DOM.desktop.className = ''; DOM.bsod.style.display = 'flex'; const timeSurvived = Math.floor((Date.now() - simState.startTime) / 1000); DOM.bsod.querySelector('#final-score').innerHTML = ` <p>Survival Time: ${timeSurvived}s</p> <p>Popups Closed: ${simState.counts.closedPopups}</p> <p>Toolbars Cleared: ${simState.counts.clearedToolbars}</p> `; document.getElementById('final-insult').textContent = finalInsults[rnd(0, finalInsults.length - 1)]; }
+    function restartGame() { location.reload(); }
+
+    // --- UI & CORE MECHANICS --- (Unchanged logic)
+    function updateTimer() { document.getElementById('timer').textContent = Math.floor((Date.now() - simState.startTime) / 1000); }
+    function updateUI() { document.getElementById('cpu-usage').textContent = Math.round(simState.resources.cpu); document.getElementById('ram-usage').textContent = Math.round(simState.resources.ram); document.getElementById('pop-closed-count').textContent = simState.counts.closedPopups; document.getElementById('tb-cleared-count').textContent = simState.counts.clearedToolbars; document.getElementById('nuke-count').textContent = simState.counts.nukesUsed; document.getElementById('icon-clicks').textContent = simState.counts.iconsClicked; const integrityPercent = Math.max(0, simState.integrity); const integrityBar = document.getElementById('integrity-bar'); integrityBar.style.width = integrityPercent + '%'; if (integrityPercent < 25) integrityBar.style.backgroundColor = '#f00'; else if (integrityPercent < 60) integrityBar.style.backgroundColor = '#ff0'; else integrityBar.style.backgroundColor = '#0f0'; worm.speed = 2 + (100 - simState.integrity) / 20; worm.length = 50 + (100 - simState.integrity); if (simState.integrity < 60) worm.color = 'yellow'; if (simState.integrity < 25) worm.color = 'red'; if (simState.integrity < 25) DOM.desktop.className = 'desktop-degrade-3'; else if (simState.integrity < 50) DOM.desktop.className = 'desktop-degrade-2'; else if (simState.integrity < 75) DOM.desktop.className = 'desktop-degrade-1'; else DOM.desktop.className = ''; updateNukeButton(); updateAmbientSound(); }
+    function updateNukeButton() { if (simState.cooldowns.nuke > 0) { simState.cooldowns.nuke -= 50 / 1000; DOM.nukeBtns.forEach(btn => { btn.disabled = true; btn.querySelector('.cooldown-timer').textContent = `(${Math.ceil(simState.cooldowns.nuke)}s)`; }); } else { DOM.nukeBtns.forEach(btn => { btn.disabled = false; btn.querySelector('.cooldown-timer').textContent = '(Ready)'; }); } }
+    function updateResources() { const baseCpu = simState.elements.toolbars.length * 1.5 + simState.elements.popups.length * 1 + simState.elements.icons.length * 0.5; const baseRam = 128 + simState.elements.toolbars.length * 8 + simState.elements.popups.length * 4 + simState.elements.icons.length * 2; simState.resources.cpu = baseCpu + (Math.random() * 10 - 5); simState.resources.ram = baseRam + (Math.random() * 20 - 10); if (simState.resources.cpu > 100) simState.resources.cpu = 100; if (simState.resources.cpu > 90) DOM.body.classList.add('major-glitch'); else if (simState.resources.cpu > 70) DOM.browser.style.filter = `blur(1px) contrast(1.5)`; else { DOM.body.classList.remove('major-glitch'); DOM.browser.style.filter = 'none'; } }
+    function updateIntegrity(amount = 0) { simState.integrity += amount; const drain = (simState.resources.cpu / 100) * difficultySettings[simState.difficulty].integrityDrain; simState.integrity -= drain; if (simState.integrity > 100) simState.integrity = 100; }
+    function checkEndCondition() { if (simState.integrity <= 0) stopSim(); }
+
+    // --- ANNOYANCE GENERATORS (with colored toolbars) ---
+    function addToolbar() { if (!simState.running) return; simState.counts.toolbars++; updateIntegrity(-1.5); const tb = document.createElement('div'); tb.className = 'toolbar'; const numItems = rnd(2, 4); for (let i = 0; i < numItems; i++) { tb.appendChild(createToolbarItem()); if (Math.random() > 0.7) tb.appendChild(document.createElement('div')).className = 'toolbar-separator'; } DOM.toolbars.prepend(tb); simState.elements.toolbars.push(tb); playSound('beep', { freq: 200, dur: 0.05, vol: 0.3 }); }
+    function createToolbarItem() { const btn = document.createElement('button'); btn.className = 'toolbar-item'; const contentType = rnd(1, 3); if (contentType === 1) { btn.textContent = toolbarData.labels[rnd(0, toolbarData.labels.length - 1)]; } else if (contentType === 2) { const img = document.createElement('img'); img.src = toolbarData.icons[rnd(0, toolbarData.icons.length - 1)]; btn.appendChild(img); } else { const img = document.createElement('img'); img.src = toolbarData.icons[rnd(0, toolbarData.icons.length - 1)]; btn.appendChild(img); btn.append(" " + toolbarData.labels[rnd(0, toolbarData.labels.length - 1)]); } btn.style.fontFamily = toolbarData.fonts[rnd(0, toolbarData.fonts.length - 1)]; btn.onclick = () => { updateIntegrity(-2); spawnPopup(); playSound('beep', { freq: 1000, dur: 0.05 }); }; const r = Math.random(); if (r < 0.25) { btn.style.backgroundColor = '#ff0'; btn.style.color = '#f00'; btn.style.fontWeight = 'bold'; btn.style.animation = 'pulse 1s infinite alternate'; } else if (r < 0.5) { btn.style.backgroundColor = '#0f0'; btn.style.color = '#00f'; btn.style.animation = 'pulse 0.8s infinite alternate'; } return btn; }
+    
+    function closePopup(popupElement) {
+        popupElement.remove();
+        simState.counts.closedPopups++;
+        simState.elements.popups = simState.elements.popups.filter(p => p !== popupElement);
+        updateIntegrity(1);
+        playSound('close_popup');
+    }
+    function spawnPopup() {
+        if (!simState.running) return;
+        simState.counts.popups++;
+        updateIntegrity(-0.5);
+        const win = document.createElement('div');
+        win.className = 'popup-window';
+        win.style.width = rnd(240, 320) + 'px';
+        win.style.left = rnd(20, window.innerWidth - 340) + 'px';
+        win.style.top = rnd(50, window.innerHeight - 150) + 'px';
+        win.innerHTML = `<div class="popup-header"><span>System Alert</span><span class="close-btn">X</span></div><div class="popup-body">${popupMsgs[rnd(0, popupMsgs.length-1)]}</div>`;
+        win.onclick = () => closePopup(win);
+        win.querySelector('.close-btn').onclick = (e) => { e.stopPropagation(); closePopup(win); };
+        makeDraggable(win);
+        DOM.body.appendChild(win);
+        simState.elements.popups.push(win);
+    }
+    function spawnDesktopIcon() { if (!simState.running) return; const iconType = Math.random() < 0.2 ? 'baby' : 'computer'; simState.counts.icons++; const icon = document.createElement('div'); icon.className = 'desktop-icon'; icon.style.left = rnd(10, window.innerWidth - 90) + 'px'; icon.style.top = rnd(10, window.innerHeight - 90) + 'px'; if (iconType === 'baby') { icon.innerHTML = `<img src="https://i.imgur.com/zoQ3k86.gif"><p>da_baby.exe</p>`; icon.onclick = () => { simState.counts.iconsClicked++; updateIntegrity(-15); for(let i=0; i<3; i++) addToolbar(); playSound('nuke_explosion'); icon.remove(); simState.elements.icons = simState.elements.icons.filter(i => i !== icon); if (!simState.achievements.clickBaby) { showAchievement('Achievement: You Monster!'); simState.achievements.clickBaby = true; } }; } else { icon.innerHTML = `<img src="https://i.imgur.com/v8x6e5J.png"><p>My Computer?</p>`; icon.onclick = () => { simState.counts.iconsClicked++; updateIntegrity(-5); for(let i=0; i<3; i++) spawnPopup(); playSound('beep', { freq: 150, dur: 0.2, vol: 1 }); icon.remove(); simState.elements.icons = simState.elements.icons.filter(i => i !== icon); if (!simState.achievements.clickIcon) { showAchievement('Achievement: Curiosity'); simState.achievements.clickIcon = true; } }; } makeDraggable(icon); DOM.desktop.appendChild(icon); simState.elements.icons.push(icon); }
+    function triggerBlueLobster() { DOM.jumpscare.style.backgroundImage = 'url(https://i.imgur.com/YxJRn2s.png)'; DOM.jumpscare.style.display = 'block'; playSound('jumpscare'); setTimeout(() => DOM.jumpscare.style.display = 'none', 300); }
+
+    // --- PLAYER ACTIONS ---
+    function showNukeMessage(message) {
+        DOM.nukeText.textContent = message;
+        DOM.nukeText.style.display = 'block';
+        setTimeout(() => DOM.nukeText.style.display = 'none', 2000);
+    }
+    function triggerNukeEffects(textQuotes) {
+        simState.cooldowns.nuke = cooldownSettings[simState.difficulty];
+        simState.counts.nukesUsed++;
+        playSound('nuke_explosion');
+        document.getElementById('explosion').style.display = 'block';
+        setTimeout(() => document.getElementById('explosion').style.display = 'none', 1000);
+        showNukeMessage(textQuotes[rnd(0, textQuotes.length - 1)]);
+        speak(nukeSpeechQuotes[rnd(0, nukeSpeechQuotes.length-1)], { pitch: 0.8, rate: 0.9 });
+    }
+    function useNukePopups() { if (simState.cooldowns.nuke > 0) return; triggerNukeEffects(popupNukeQuotes); const popupsToRemove = simState.elements.popups.length; simState.elements.popups.forEach(win => win.remove()); simState.counts.closedPopups += popupsToRemove; simState.elements.popups = []; updateIntegrity(popupsToRemove * 0.25); }
+    function useNukeToolbars() { if (simState.cooldowns.nuke > 0) return; triggerNukeEffects(toolbarNukeQuotes); const toolbarsToRemove = simState.elements.toolbars.length; simState.elements.toolbars.forEach(tb => tb.remove()); simState.counts.clearedToolbars += toolbarsToRemove; simState.elements.toolbars = []; simState.counts.toolbars = 0; updateIntegrity(toolbarsToRemove * 0.5); }
+    function useAnnihilate() { if (simState.cooldowns.nuke > 0) return; triggerNukeEffects(annihilateNukeQuotes); const popupsToRemove = simState.elements.popups.length; simState.elements.popups.forEach(win => win.remove()); simState.counts.closedPopups += popupsToRemove; simState.elements.popups = []; const toolbarsToRemove = simState.elements.toolbars.length; simState.elements.toolbars.forEach(tb => tb.remove()); simState.counts.clearedToolbars += toolbarsToRemove; simState.elements.toolbars = []; simState.counts.toolbars = 0; updateIntegrity(-20); }
+    
+    function toggleFlip() { DOM.body.style.transform = DOM.body.style.transform === 'rotate(180deg)' ? '' : 'rotate(180deg)'; }
+    function agreeToTerms() { const btn = document.getElementById('agreeBtn'); if (btn.disabled) return; playSound('error', {vol: 1}); addToolbar(); addToolbar(); addToolbar(); spawnPopup(); spawnPopup(); updateIntegrity(-10); toggleFlip(); btn.textContent = "You shouldn't have done that."; btn.disabled = true; if (!simState.achievements.agree) { showAchievement('Achievement: Blind Trust'); simState.achievements.agree = true; } }
+    
+    // --- FLIPPY & ACHIEVEMENTS & INTRO ---
+    function showStartControls() { DOM.introContainer.style.display = 'none'; DOM.startControls.style.display = 'block'; }
+    DOM.skipIntroBtn.onclick = showStartControls;
+    DOM.introCrawler.addEventListener('animationend', showStartControls);
+
+    function showFlippy() { if (!simState.running) return; const tip = flippyTips[rnd(0, flippyTips.length-1)]; document.getElementById('flippy-text').textContent = tip; DOM.flippy.style.display = 'block'; speak(tip); }
+    function dismissFlippy() { const r = Math.random(); if (r < 0.5) { const msg = "I can't let you do that, Dave."; document.getElementById('flippy-text').textContent = msg; speak(msg); updateIntegrity(-5); } else { DOM.flippy.style.display = 'none'; } }
+    function showAchievement(text) { playSound('achievement'); const achievement = document.createElement('div'); achievement.className = 'achievement-popup'; achievement.innerHTML = `<span class="achievement-popup-title">🏆 Achievement Unlocked! 🏆</span>${text}`; document.body.appendChild(achievement); setTimeout(() => achievement.remove(), 4000); }
+    function checkAchievements() { const time = (Date.now() - simState.startTime) / 1000; if (!simState.achievements.survive60 && time >= 60) { simState.achievements.survive60 = true; showAchievement('Survivor: Lasted 60 seconds!'); } if (!simState.achievements.close25 && simState.counts.closedPopups >= 25) { simState.achievements.close25 = true; showAchievement('Popup Hunter'); } if (!simState.achievements.useNuke && simState.counts.nukesUsed > 0) { simState.achievements.useNuke = true; showAchievement('Scorched Earth'); } }
+
+    // --- UTILITIES ---
+    function rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function makeDraggable(elmnt) { let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0; const header = elmnt.querySelector(".popup-header"); if (header) { header.onmousedown = dragMouseDown; } function dragMouseDown(e) { e = e || window.event; e.preventDefault(); e.stopPropagation(); pos3 = e.clientX; pos4 = e.clientY; document.onmouseup = closeDragElement; document.onmousemove = elementDrag; } function elementDrag(e) { e = e || window.event; e.preventDefault(); pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY; pos3 = e.clientX; pos4 = e.clientY; elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; } function closeDragElement() { document.onmouseup = null; document.onmousemove = null; } }
+  </script>
+</body>
+</html>
